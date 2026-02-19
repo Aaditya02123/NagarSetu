@@ -1,6 +1,7 @@
 import React from "react";
-
+import { useNavigate } from "react-router-dom";
 function Footer() {
+  const navigate = useNavigate();
   return (
     <footer className="bg-slate-950 text-gray-400 py-12 px-6">
       <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
@@ -17,9 +18,9 @@ function Footer() {
         <div>
           <h4 className="text-white font-semibold mb-4">Quick Links</h4>
           <ul className="space-y-2">
-            <li className="hover:text-sky-400 cursor-pointer">Home</li>
-            <li className="hover:text-sky-400 cursor-pointer">Report Issue</li>
-            <li className="hover:text-sky-400 cursor-pointer">Login</li>
+            <li className="hover:text-sky-400 cursor-pointer" >Home</li>
+            <li className="hover:text-sky-400 cursor-pointer" onClick={() => navigate("/report")}>Report Issue</li>
+            <li className="hover:text-sky-400 cursor-pointer" onClick={() => navigate("/login")}>Login</li>
           </ul>
         </div>
 
