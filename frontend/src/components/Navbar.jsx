@@ -25,6 +25,10 @@ function Navbar() {
             Register
           </Link>
 
+          <Link to="/register" onClick={() => setMenuOpen(false)}>
+            About Us
+          </Link>
+
         </div>
       )}
 
@@ -66,6 +70,8 @@ function Navbar() {
           </Link>
 
           <Link to="/report" className="hover:text-sky-400 transition duration-300">Report</Link>
+
+          <Link to="/about" className="hover:text-sky-400 transition duration-300">About Us</Link>
 
 
         </div>

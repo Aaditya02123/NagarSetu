@@ -1,7 +1,9 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Hero() {
+    const navigate = useNavigate();
     const images = [
     "/images/traffic.jpg",
     "/images/pothole.jpg",
@@ -55,7 +57,8 @@ function Hero() {
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row justify-center gap-4">
 
-          <button className="px-8 py-3 bg-sky-500 hover:bg-sky-600 transition duration-300 rounded-lg font-semibold shadow-lg shadow-sky-500/30">
+          <button className="px-8 py-3 bg-sky-500 hover:bg-sky-600 transition duration-300 rounded-lg font-semibold shadow-lg shadow-sky-500/30"
+            onClick={() => navigate("/report")}>
             Report an Issue
           </button>
 

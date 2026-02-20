@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import Report from "./pages/Report";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import About from "./pages/About";
 
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
         <Route path="/report" element={<Report />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/about" element={<About Us />} />
       </Routes>
     </Router>
   );
