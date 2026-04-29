@@ -1,0 +1,7 @@
+.vscode/
+NagarSetu-Frontend/node_modules
+NagarSetu-Backend/__pycache__
+NagarSetu-Backend/venv/Lib
+NagarSetu-ML/venv/Lib
+data/
+logs/
