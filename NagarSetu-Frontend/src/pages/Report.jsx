@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import DragDropUpload from "../components/DragDropUpload";
@@ -505,9 +505,9 @@ function AIPanel({ image, preview, category, analysisState, analysis }) {
                   <div key={i} className="flex items-center gap-2.5">
                     <div className={`w-4 h-4 rounded-full shrink-0 flex items-center justify-center
                                     ${step.done
-                                      ? "bg-green-500"
-                                      : "bg-slate-100 border border-slate-300"
-                                    }`}>
+                        ? "bg-green-500"
+                        : "bg-slate-100 border border-slate-300"
+                      }`}>
                       {step.done
                         ? <CheckCircle2 size={10} className="text-white" />
                         : <ChevronRight size={9} className="text-slate-400" />
@@ -540,38 +540,60 @@ function AIPanel({ image, preview, category, analysisState, analysis }) {
 
 // ── Main component ────────────────────────────────────────────────────────────
 function Report() {
-  const [title,         setTitle]         = useState("");
-  const [description,   setDescription]   = useState("");
-  const [category,      setCategory]      = useState("");
-  const [location,      setLocation]      = useState("");
-  const [image,         setImage]         = useState(null);
-  const [preview,       setPreview]       = useState(null);
-  const [loading,       setLoading]       = useState(false);
-  const [toast,         setToast]         = useState(null);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("");
+  const [location, setLocation] = useState("");
+  const [image, setImage] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [toast, setToast] = useState(null);
   const [analysisState, setAnalysisState] = useState("idle"); // idle | scanning | done
-  const [analysis,      setAnalysis]      = useState(null);
+  const [analysis, setAnalysis] = useState(null);
 
-  // Trigger AI analysis whenever image or category changes
+  // Guards against re-running the scan animation when only the category changes.
+  const scanDoneRef = useRef(false);
+
+  // ── Runs ONLY when a new image is uploaded ─────────────────────────────────
+  // Triggers the 3-second scan animation once per image upload.
   useEffect(() => {
     if (!image) {
       setAnalysisState("idle");
       setAnalysis(null);
+      scanDoneRef.current = false;
       return;
     }
+    if (scanDoneRef.current) return; // scan already done for this image
+
     setAnalysisState("scanning");
     setAnalysis(null);
 
     const timer = setTimeout(() => {
-      // Pick analysis based on category; fallback to the uploaded image's inferred type
-      const key = category && AI_ANALYSIS[category] ? category : "Other";
-      setAnalysis(AI_ANALYSIS[key]);
-      setAnalysisState("done");
+      // Read category at the moment the scan finishes via functional updater,
+      // so we don't need category as a dependency of this effect.
+      setCategory((currentCategory) => {
+        const key = currentCategory && AI_ANALYSIS[currentCategory] ? currentCategory : "Other";
+        setAnalysis(AI_ANALYSIS[key]);
+        setAnalysisState("done");
+        scanDoneRef.current = true;
+        return currentCategory; // no change to category state
+      });
     }, 3000);
 
     return () => clearTimeout(timer);
-  }, [image, category]);
+  }, [image]); // image ONLY — NOT category
+
+  // ── Runs ONLY when category changes, AFTER the scan is already done ────────
+  // Silently swaps the result panel — no scan animation replay.
+  useEffect(() => {
+    if (analysisState !== "done") return;
+    if (!category) return;
+    const key = AI_ANALYSIS[category] ? category : "Other";
+    setAnalysis(AI_ANALYSIS[key]);
+  }, [category]); // category ONLY
 
   const handleFileSelect = (file) => {
+    scanDoneRef.current = false; // fresh scan for the new image
     setImage(file);
     setPreview(URL.createObjectURL(file));
   };
@@ -581,6 +603,7 @@ function Report() {
     setPreview(null);
     setAnalysisState("idle");
     setAnalysis(null);
+    scanDoneRef.current = false;
   };
 
   const handleSubmit = async (e) => {
@@ -596,12 +619,12 @@ function Report() {
     setLoading(true);
     try {
       const formData = new FormData();
-      formData.append("title",       title);
+      formData.append("title", title);
       formData.append("description", description);
-      formData.append("category",    category);
-      formData.append("location",    location || "");
-      formData.append("city",        location ? location.split(",").pop().trim() : "");
-      formData.append("image",       image);
+      formData.append("category", category);
+      formData.append("location", location || "");
+      formData.append("city", location ? location.split(",").pop().trim() : "");
+      formData.append("image", image);
 
       await api.upload("/complaints", formData);
 
