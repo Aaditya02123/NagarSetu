@@ -203,3 +203,34 @@ The backend creates required tables automatically using SQLAlchemy when the serv
 | Aadityaraj Soni | Backend development & ML Integration |
 | Aaadi Dubeey | Frontend Developer |
 | Aashay Jain | Database and Testing |
+
+---
+
+## Images
+
+### 1. Home Page
+![Home Page](screenshots/Home.png)
+
+### 2. Login Page
+![Login Page](screenshots/LoginPage.png)
+
+### 3. Register Page
+![Register Page](screenshots/RegisterPage.png)
+
+### 4. Report Page
+![Report Page](screenshots/ReportPage.png)
+
+### 5. User Dashboard Page
+![User Dashboard](screenshots/UserDashboard.png)
+
+### 6. About Page
+![About Page](screenshots/About.png)
+
+### 7. Complaint Page
+![Complaint Page](screenshots/Complaints.png)
+
+### 8. Department Page
+![Department Page](screenshots/Departments.png)
+
+### 9. Analytics Page
+![Analytics Page](screenshots/Analytics.png)
